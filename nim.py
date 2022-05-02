@@ -101,7 +101,10 @@ class NimAI():
         Return the Q-value for the state `state` and the action `action`.
         If no Q-value exists yet in `self.q`, return 0.
         """
-        raise NotImplementedError
+        if (state, action) in self.q.keys():
+            return self.queue[(state, action)]
+        else:
+            return 0
 
     def update_q_value(self, state, action, old_q, reward, future_rewards):
         """
@@ -147,6 +150,8 @@ class NimAI():
         If multiple actions have the same Q-value, any of those
         options is an acceptable return value.
         """
+        # if epsilon==True this becomes an epsilon greedy algorithm
+        # otherwise just behaves greedily 100% of the time
         raise NotImplementedError
 
 
