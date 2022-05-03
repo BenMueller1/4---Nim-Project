@@ -147,6 +147,7 @@ class NimAI():
             possible_actions_with_q_vals[action] = self.get_q_value(state, action)
         return possible_actions_with_q_vals       
 
+
     def find_best_action(self, possible_actions_and_q_vals):
         max_q_val = -2
         best_action = None
