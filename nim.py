@@ -1,5 +1,6 @@
 import math
 import random
+from re import L
 import time
 
 
@@ -106,6 +107,13 @@ class NimAI():
         else:
             return 0
 
+    def compute_new_value_estimate(self, reward, future_rewards):
+        second_learning_rate = 1 # WHAT SHOULD THIS BE?
+        max_possible_future_reward = max(future_rewards)  # is future_rewards a list?
+        main_term = second_learning_rate * max_possible_future_reward
+        return reward + main_term
+
+
     def update_q_value(self, state, action, old_q, reward, future_rewards):
         """
         Update the Q-value for the state `state` and the action `action`
@@ -121,7 +129,8 @@ class NimAI():
         `alpha` is the learning rate, and `new value estimate`
         is the sum of the current reward and estimated future rewards.
         """
-        raise NotImplementedError
+        new_value_estimate = self.compute_new_value_estimate(reward, future_rewards)
+        self.q[(state, action)] = old_q + self.alpha*(new_value_estimate - old_q)   # update q value
 
     def best_future_reward(self, state):
         """
@@ -133,7 +142,12 @@ class NimAI():
         Q-value in `self.q`. If there are no available actions in
         `state`, return 0.
         """
-        raise NotImplementedError
+        # gather all (state, action) pairs with this state
+        max_q_value = 0
+        for key, q_value in self.q.items():
+            if key[0] == state and q_value is not None:      # should this be "is not None"?
+                max_q_value = max(max_q_value, q_value)
+        return max_q_value
 
     def choose_action(self, state, epsilon=True):
         """
